@@ -1,0 +1,3 @@
+*.pdf
+generator/node_modules
+generator/out
