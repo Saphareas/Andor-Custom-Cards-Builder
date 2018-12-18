@@ -30,12 +30,16 @@ if (relevantArg != null && relevantArg != "undefined") {
   console.debug(" No Argument was given. Use 'help' for usage information.");
 }
 
-function generateCards({story_cards, event_cards}) {
-  if (story_cards == undefined || event_cards == undefined) {
-    console.debug("Bad JSON contents. At least 'story_cards' and 'event_cards' objects are needed.");
-    process.exit(1);
+function generateCards(jsonObj) {
+  if (jsonObj.story_cards == undefined) {
+    console.debug("Nothing to do for Story Cards...");
+  } else {
+    console.debug(jsonObj.story_cards);
+    buildStoryCards(jsonObj.story_cards);
   }
+}
 
+function buildStoryCards(story_cards) {
   fs.readFile("story-template.html", "utf8", (err, data) => {
     if (err) {
       console.error(err);
@@ -44,26 +48,21 @@ function generateCards({story_cards, event_cards}) {
     }
     const story_template = data;
     for (i=0; i<story_cards.length; i++) {
-      let story_card = story_template
+      let card = story_template
         .replace("{{title}}", "Lorem ipsum dolor")
         .replace("{{index}}", story_cards[i].index)
-        .replace("{{story}}", story_cards[i].story_text)
-        .replace("{{gameplay}}", story_cards[i].gameplay_text);
-      //story_card.window.document.getElementById("card-index").innerText = story_cards[i].index;
-      //console.log(story_card);
+        .replace("{{content}}", story_cards[i].content);
       (async (card, index) => {
-        const browser = await puppeteer.launch({headless: false});
+        const browser = await puppeteer.launch({headless: true});
         const page = await browser.newPage();
-        await page.setViewport({width: 2006, height: 1530});
+        await page.setViewport({width: 620, height: 475});
         await page.setContent(card);
         await page.screenshot({path: `out/card-${index}.png`});
 
         await browser.close();
-      })(story_card, story_cards[i].index);
+      })(card, story_cards[i].index);
     }
   });
-
-  //console.log(event_cards);
 }
 
 function echoHelp() {
