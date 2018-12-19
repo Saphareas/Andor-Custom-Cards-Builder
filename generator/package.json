@@ -1,0 +1,19 @@
+{
+  "name": "andor-cards-generator",
+  "version": "0.2.0",
+  "description": "",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "test": "node main.js example.json"
+  },
+  "author": "Fabian Große",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "html-pdf": "^2.2.0",
+    "jsdom": "^13.1.0",
+    "pdfjs": "^2.1.0",
+    "puppeteer": "^1.11.0",
+    "recursive-readdir": "^2.2.2"
+  }
+}

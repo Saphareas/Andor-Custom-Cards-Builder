@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<style>
+		@font-face {
+			font-family: "Abhaya Libre";
+			src: url("assets/Abhaya Libre/AbhayaLibre-Regular.ttf");
+		}
+		@font-face {
+			font-family: "Abhaya Libre";
+			src: url("assets/Abhaya Libre/AbhayaLibre-Bold.ttf");
+			font-weight: bold;
+		}
+		body {
+			width: 21cm;
+			height: 29.7cm;
+			font-family: "Abhaya Libre", "Noto Serif", serif;
+		}
+		body, p {
+			margin: 0;
+			padding: 0;
+		}
+		.template {
+			height: 100%;
+			width: 100%;
+			background-size: 100%;
+			background-image: url("assets/Andor_Blankocard-2.png");
+			background-repeat: no-repeat;
+			display: grid;
+			grid-template-areas:
+				". . . ."
+				". front_1 back_1 ."
+				". . . ."
+				". front_2 back_2 ."
+				". . . .";
+			grid-template-rows: 109px 1fr 38px 1fr 70px;
+			grid-template-columns: 95px 1fr 1fr 95px;
+		}
+		.front {
+			text-align: center;
+		}
+		.back {
+			padding: 10px 10px;
+			font-size: .6rem;
+		}
+		.title {
+			font-size: .8rem;
+			font-weight: bold;
+			margin-top: 62.5%;
+		}
+		.card-index {
+			margin-top: 14px;
+			font-size: 7rem;
+			color: white;
+		}
+		.text-outline {
+			text-shadow: 1px 1px 0 #000,
+				-1px 1px 0 #000,
+				1px -1px 0 #000,
+				-1px -1px 0 #000,
+				0px 1px 0 #000,
+				0px -1px 0 #000,
+				-1px 0px 0 #000,
+				1px 0px 0 #000,
+				2px 2px 0 #000,
+				-2px 2px 0 #000,
+				2px -2px 0 #000,
+				-2px -2px 0 #000,
+				0px 2px 0 #000,
+				0px -2px 0 #000,
+				-2px 0px 0 #000,
+				2px 0px 0 #000,
+				1px 2px 0 #000,
+				-1px 2px 0 #000,
+				1px -2px 0 #000,
+				-1px -2px 0 #000,
+				2px 1px 0 #000,
+				-2px 1px 0 #000,
+				2px -1px 0 #000,
+				-2px -1px 0 #000;
+		}
+	</style>
+</head>
+<body>
+	<div id="app" class="template">
+		<div class="front" style="grid-area:front_1">
+			<p class="title" v-html="title"></p>
+			<p class="card-index text-outline" v-html="index_1"></p>
+		</div>
+		<div class="back" style="grid-area:back_1">
+			<p class="content" v-html="content_1"></p>
+		</div>
+
+		<div class="front" style="grid-area:front_2">
+			<p class="title" v-html="title"></p>
+			<p class="card-index text-outline" v-html="index_2"></p>
+		</div>
+		<div class="back" style="grid-area:back_2">
+			<p class="content" v-html="content_2"></p>
+		</div>
+	</div>
+
+	<script src="lib/vue.min.js"></script>
+	<script>
+		var app = new Vue({
+			el: '#app',
+			data: {
+				title: "",
+				index_1: "",
+				index_2: "",
+				content_1: "",
+				content_2 : ""
+			}
+		});
+	</script>
+	<script src="lib/marked.min.js"></script>
+	<script>
+		function getUrlParameter(name) {
+			name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+			var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+			var results = regex.exec(location.search);
+			return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+		};
+		["title", "index_1", "index_2", "content_1", "content_2"].forEach(function(str) {
+			Vue.set(app, str, marked(getUrlParameter(str)));
+		});
+	</script>
+</body>
+</html>
