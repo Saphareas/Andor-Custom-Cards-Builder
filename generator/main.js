@@ -7,7 +7,8 @@
 const fs = require("fs");
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
-const puppeteer = require('puppeteer');
+const puppeteer = require("puppeteer");
+const mergePDFs = require("./mergepdfs.js");
 
 let relevantArg = process.argv[2];
 //console.debug(relevantArg);
@@ -75,6 +76,7 @@ function buildStoryCards(title, story_cards) {
         await browser.close();
       })(card, `${--j}-${++j}`);
     }
+    mergePDFs.merge(process.cwd() + "/out");
   });
 }
 
