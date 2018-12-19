@@ -11,12 +11,12 @@ const puppeteer = require("puppeteer");
 const mergePDFs = require("./mergepdfs.js");
 
 let relevantArg = process.argv[2];
-//console.debug(relevantArg);
 
+// Check if the argument is valid, either 'help' or path to a .json file
 if (relevantArg != null && relevantArg != "undefined") {
   if (relevantArg == "help") {
     echoHelp();
-  } else {
+  } else { // Try to read the file and continue on success.
     fs.readFile(relevantArg, (err, data) => {
       if (err) {
         console.error(err);
@@ -31,7 +31,12 @@ if (relevantArg != null && relevantArg != "undefined") {
   console.debug(" No Argument was given. Use 'help' for usage information.");
 }
 
+/**
+ * Build Andor cards from a JSON object
+ * @param {object} jsonObj
+ */
 function generateCards(jsonObj) {
+  // Build story cards
   if (jsonObj.story_cards == undefined) {
     console.debug("Nothing to do for story cards...");
   } else {
@@ -40,7 +45,11 @@ function generateCards(jsonObj) {
   }
 }
 
-function buildStoryCards(story_cards) {
+/**
+ * Build Andor story cards and output as ready-to-print PDF files
+ * @param {string} title        Title of your campaign
+ * @param {object} story_cards  Object conaining card declarations
+ */
 function buildStoryCards(title, story_cards) {
   fs.readFile("story-template.html", "utf8", (err, data) => {
     if (err) {
@@ -56,7 +65,7 @@ function buildStoryCards(title, story_cards) {
         .replace("{{ title }}", title)
         .replace("{{ index_1 }}", story_cards[j].index)
         .replace("{{ content_1 }}", story_cards[j].content);
-      j++; //console.debug(j);
+      j++;
       if (j < story_cards.length) {
         card = card
           .replace("{{ title }}", title)
