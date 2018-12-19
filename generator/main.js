@@ -6,9 +6,8 @@
 
 const fs = require("fs");
 const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
 const puppeteer = require("puppeteer");
-const mergePDFs = require("./mergepdfs.js");
+const mergePDFs = require("./lib/mergepdfs.js");
 
 let relevantArg = process.argv[2];
 
@@ -61,29 +60,25 @@ function buildStoryCards(title, story_cards) {
 
 		for (i = 0; i < story_cards.length; i+=2) {
 			let j = i;
-			let card = story_template
-				.replace("{{ title }}", title)
-				.replace("{{ index_1 }}", story_cards[j].index)
-				.replace("{{ content_1 }}", story_cards[j].content);
+			let params = [];
+			params.push("title="+title);
+			params.push("index_1="+story_cards[j].index);
+			params.push("content_1="+story_cards[j].content);
 			j++;
 			if (j < story_cards.length) {
-				card = card
-					.replace("{{ title }}", title)
-					.replace("{{ index_2 }}", story_cards[j].index)
-					.replace("{{ content_2 }}", story_cards[j].content);
-			} else {
-				card = card
-					.replace("{{ title }}", "")
-					.replace("{{ index_2 }}", "")
-					.replace("{{ content_2 }}", "");
+				params.push("index_2="+story_cards[j].index);
+				params.push("content_2="+story_cards[j].content);
 			}
-			(async (card, index) => {
+			(async (params, index) => {
 				const browser = await puppeteer.launch({headless: true});
 				const page = await browser.newPage();
-				await page.setContent(card);
+				await page.goto("file:///"
+					+ process.cwd()
+					+ "/story-template.html?"
+					+ (params.join("&").replace(" ", "+")));
 				await page.pdf({path: `out/card-${index}.pdf`, format: "A4", printBackground: true});
 				await browser.close();
-			})(card, `${--j}-${++j}`);
+			})(params, `${--j}-${++j}`);
 		}
 		mergePDFs.merge(process.cwd() + "/out");
 	});

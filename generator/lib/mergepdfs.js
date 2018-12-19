@@ -16,11 +16,10 @@ exports.merge = function(dir) {
 			pdfs.forEach(function(pdf){
 				let file = fs.readFileSync(pdf);
 				let ext = new pdfjs.ExternalDocument(file);
-				mergedDoc.addPagesOf(ext);
-			});
-			mergedDoc.pipe(fs.createWriteStream(dir + '/merged.pdf'));
+				mergedDoc.addPagesOf(ext);			});
+			mergedDoc.pipe(fs.createWriteStream(dir + "/merged.pdf", {flags: "w"}));
 			mergedDoc.end().then(function() {
-				console.log("\n Finished writing PDF (" + mergedDoc.pageCount + " pages total).");
+				console.log("Finished writing PDF.");
 			});
 		},
 		function(error) {
