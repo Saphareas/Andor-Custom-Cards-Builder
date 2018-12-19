@@ -32,14 +32,15 @@ if (relevantArg != null && relevantArg != "undefined") {
 
 function generateCards(jsonObj) {
   if (jsonObj.story_cards == undefined) {
-    console.debug("Nothing to do for Story Cards...");
+    console.debug("Nothing to do for story cards...");
   } else {
-    console.debug(jsonObj.story_cards);
-    buildStoryCards(jsonObj.story_cards);
+    console.log("Building your story cards...");
+    buildStoryCards(jsonObj.title, jsonObj.story_cards);
   }
 }
 
 function buildStoryCards(story_cards) {
+function buildStoryCards(title, story_cards) {
   fs.readFile("story-template.html", "utf8", (err, data) => {
     if (err) {
       console.error(err);
@@ -47,20 +48,32 @@ function buildStoryCards(story_cards) {
       process.exit(1);
     }
     const story_template = data;
-    for (i=0; i<story_cards.length; i++) {
+
+    for (i = 0; i < story_cards.length; i+=2) {
+      let j = i;
       let card = story_template
-        .replace("{{title}}", "Lorem ipsum dolor")
-        .replace("{{index}}", story_cards[i].index)
-        .replace("{{content}}", story_cards[i].content);
+        .replace("{{ title }}", title)
+        .replace("{{ index_1 }}", story_cards[j].index)
+        .replace("{{ content_1 }}", story_cards[j].content);
+      j++; //console.debug(j);
+      if (j < story_cards.length) {
+        card = card
+          .replace("{{ title }}", title)
+          .replace("{{ index_2 }}", story_cards[j].index)
+          .replace("{{ content_2 }}", story_cards[j].content);
+      } else {
+        card = card
+          .replace("{{ title }}", "")
+          .replace("{{ index_2 }}", "")
+          .replace("{{ content_2 }}", "");
+      }
       (async (card, index) => {
         const browser = await puppeteer.launch({headless: true});
         const page = await browser.newPage();
-        await page.setViewport({width: 620, height: 475});
         await page.setContent(card);
-        await page.screenshot({path: `out/card-${index}.png`});
-
+        await page.pdf({path: `out/card-${index}.pdf`, format: "A4", printBackground: true});
         await browser.close();
-      })(card, story_cards[i].index);
+      })(card, `${--j}-${++j}`);
     }
   });
 }
