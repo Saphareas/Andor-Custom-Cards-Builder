@@ -1,4 +1,4 @@
-# Andor Custom Campaign Builder
+# Andor Custom Cards Builder
 
 This is a Fan-project for the board game 'The Legends of Andor'. You can write your own campaigns for this game and I thought I'd build something that generates original-looking cards out of plain text.
 
@@ -33,7 +33,7 @@ The JSON should look like the example.json/like this
   "story_cards": [
     {
       "index": "A1",
-      "content": "<i>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. </i><br><br><b>Donec quam felis</b>, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim."
+      "content": "*Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.*<br><br>**Donec quam felis**, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim."
     },
     {
       "index": "A2",
@@ -47,7 +47,7 @@ The JSON should look like the example.json/like this
 }
 ```
 
-You can use `<i>`, `<b>` and `<br>` tags in your text to format it _italic_, **bold** or insert a <br>
+You can use Markdown and/or `<i>`, `<b>` and `<br>` tags in your text to format it _italic_, **bold** or insert a <br>
 linebreak.
 
 ## Authors
