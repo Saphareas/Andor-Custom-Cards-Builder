@@ -24,33 +24,58 @@
 		.template {
 			height: 100%;
 			width: 100%;
-			background-size: 100%;
-			background-image: url("assets/Andor_Blankocard-2.png");
-			background-repeat: no-repeat;
 			display: grid;
 			grid-template-areas:
 				". . . ."
+				". . . ."
+				". . . ."
+				". . . ."
+				". . . ."
+				". . . .";
+			grid-template-rows: 109px 1fr 14px 14px 1fr 70px;
+			grid-template-columns: 95px 1fr 1fr 95px;
+		}
+		#card_1, #card_2 {
+			grid-column: 1 / 5;
+			background-repeat: no-repeat;
+			background-size: auto 13cm;
+			background-position-x: center;
+			display: grid;
+		}
+		#card_1 {
+			grid-row: 1 / 4;
+			grid-template-areas:
+				". . . ."
 				". front_1 back_1 ."
+				". . . .";
+			grid-template-rows: 109px 1fr 14px;
+			grid-template-columns: 95px 1fr 1fr 95px;
+			background-position-y: bottom;
+		}
+		#card_2 {
+			grid-row: 4 / 7;
+			grid-template-areas:
 				". . . ."
 				". front_2 back_2 ."
 				". . . .";
-			grid-template-rows: 109px 1fr 38px 1fr 70px;
+			grid-template-rows: 14px 1fr 70px;
 			grid-template-columns: 95px 1fr 1fr 95px;
+			background-position-y: top;
 		}
 		.front {
 			text-align: center;
 		}
 		.back {
 			padding: 10px 10px;
-			font-size: .6rem;
+			font-size: .7rem;
 		}
-		.title {
-			font-size: .8rem;
+		.title, .title * {
+			font-size: 1rem;
 			font-weight: bold;
 			margin-top: 62.5%;
 		}
 		.card-index {
-			margin-top: 14px;
+			margin-top: 10px;
 			font-size: 7rem;
 			color: white;
 		}
@@ -84,20 +109,23 @@
 </head>
 <body>
 	<div id="app" class="template">
-		<div class="front" style="grid-area:front_1">
-			<p class="title" v-html="title"></p>
-			<p class="card-index text-outline" v-html="index_1"></p>
+		<div id="card_1" v-bind:style=background_1>
+			<div class="front" style="grid-area:front_1">
+				<p class="title" v-html="title"></p>
+				<p class="card-index text-outline" v-html="index_1"></p>
+			</div>
+			<div class="back" style="grid-area:back_1">
+				<p class="content" v-html="content_1"></p>
+			</div>
 		</div>
-		<div class="back" style="grid-area:back_1">
-			<p class="content" v-html="content_1"></p>
-		</div>
-
-		<div class="front" style="grid-area:front_2">
-			<p class="title" v-html="title"></p>
-			<p class="card-index text-outline" v-html="index_2"></p>
-		</div>
-		<div class="back" style="grid-area:back_2">
-			<p class="content" v-html="content_2"></p>
+		<div id="card_2" v-bind:style=background_2>
+			<div class="front" style="grid-area:front_2">
+				<p class="title" v-html="title"></p>
+				<p class="card-index text-outline" v-html="index_2"></p>
+			</div>
+			<div class="back" style="grid-area:back_2">
+				<p class="content" v-html="content_2"></p>
+			</div>
 		</div>
 	</div>
 
@@ -110,7 +138,9 @@
 				index_1: "",
 				index_2: "",
 				content_1: "",
-				content_2 : ""
+				content_2 : "",
+				background_1: "",
+				background_2: ""
 			}
 		});
 	</script>
@@ -124,6 +154,9 @@
 		};
 		["title", "index_1", "index_2", "content_1", "content_2"].forEach(function(str) {
 			Vue.set(app, str, marked(getUrlParameter(str)));
+		});
+		["background_1", "background_2"].forEach(function(str) {
+			Vue.set(app, str, "background-image: url('"+getUrlParameter(str)+"');")
 		});
 	</script>
 </body>

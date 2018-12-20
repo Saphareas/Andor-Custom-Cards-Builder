@@ -5,7 +5,6 @@
  */
 
 const fs = require("fs");
-const jsdom = require("jsdom");
 const puppeteer = require("puppeteer");
 const mergePDFs = require("./lib/mergepdfs.js");
 
@@ -49,25 +48,28 @@ function generateCards(jsonObj) {
  * @param {string} title        Title of your campaign
  * @param {object} story_cards  Object conaining card declarations
  */
-function buildStoryCards(title, story_cards) {
-	fs.readFile("story-template.html", "utf8", (err, data) => {
-		if (err) {
-			console.error(err);
-			console.debug("Something went wrong.");
-			process.exit(1);
-		}
-		const story_template = data;
-
-		for (i = 0; i < story_cards.length; i+=2) {
-			let j = i;
+async function buildStoryCards(title, story_cards) {
+	await (async () => {
+		for (i = 0; i < story_cards.length; i++) {
 			let params = [];
 			params.push("title="+title);
-			params.push("index_1="+story_cards[j].index);
-			params.push("content_1="+story_cards[j].content);
-			j++;
-			if (j < story_cards.length) {
-				params.push("index_2="+story_cards[j].index);
-				params.push("content_2="+story_cards[j].content);
+			params.push("index_1="+story_cards[i].index);
+			params.push("content_1="+story_cards[i].content);
+			if (story_cards[i].background) {
+				params.push("background_1="+story_cards[i].background);
+			} else {
+				// assets/Andor_Blankocard-1.png
+				params.push("background_1=assets/Andor_Blankocard-1.png");
+			}
+			i++;
+			if (i < story_cards.length) {
+				params.push("index_2="+story_cards[i].index);
+				params.push("content_2="+story_cards[i].content);
+				if (story_cards[i].background) {
+					params.push("background_2="+story_cards[i].background);
+				} else {
+					params.push("background_2=assets/Andor_Blankocard-1.png");
+				}
 			}
 			(async (params, index) => {
 				const browser = await puppeteer.launch({headless: true});
@@ -75,13 +77,14 @@ function buildStoryCards(title, story_cards) {
 				await page.goto("file:///"
 					+ process.cwd()
 					+ "/story-template.html?"
-					+ (params.join("&").replace(" ", "+")));
+					+ encodeURI((params.join("&"))));
 				await page.pdf({path: `out/card-${index}.pdf`, format: "A4", printBackground: true});
 				await browser.close();
-			})(params, `${--j}-${++j}`);
+			})(params, `${i-1}-${i}`);
 		}
-		mergePDFs.merge(process.cwd() + "/out");
-	});
+	})();
+	console.log("Merging PDF files...");
+	await mergePDFs.merge(process.cwd() + "/out");
 }
 
 function echoHelp() {
