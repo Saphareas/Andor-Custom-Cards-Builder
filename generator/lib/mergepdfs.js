@@ -9,21 +9,17 @@ const fs = require("fs");
 const pdfjs = require("pdfjs");
 const readdir = require("recursive-readdir");
 
-exports.merge = function(dir) {
+exports.merge = async function(dir) {
 	let mergedDoc = new pdfjs.Document();
-	readdir(dir, ["!*.pdf", "merged.pdf"]).then( // get all pdf-files except previous merges
-		function(pdfs) {
-			pdfs.forEach(function(pdf){
-				let file = fs.readFileSync(pdf);
-				let ext = new pdfjs.ExternalDocument(file);
-				mergedDoc.addPagesOf(ext);			});
-			mergedDoc.pipe(fs.createWriteStream(dir + "/merged.pdf", {flags: "w"}));
-			mergedDoc.end().then(function() {
-				console.log("Finished writing PDF.");
-			});
-		},
-		function(error) {
-			throw error;
-		}
-	);
+	let pdfs= await readdir(dir, ["!*.pdf", "merged.pdf"]);
+	// get all pdf-files except previous merges
+	await (async (pdfs) => {
+		pdfs.forEach(function(pdf) {
+			let file = fs.readFileSync(pdf);
+			let ext = new pdfjs.ExternalDocument(file);
+			mergedDoc.addPagesOf(ext);
+		});
+		mergedDoc.pipe(fs.createWriteStream(dir + "/merged.pdf", {flags: "w"}));
+		await mergedDoc.end();
+	})(pdfs);
 }
