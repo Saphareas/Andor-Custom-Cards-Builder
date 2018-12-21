@@ -8,39 +8,68 @@ const fs = require("fs");
 const puppeteer = require("puppeteer");
 const mergePDFs = require("./lib/mergepdfs.js");
 
-let relevantArg = process.argv[2];
+main();
 
-// Check if the argument is valid, either 'help' or path to a .json file
-if (relevantArg != null && relevantArg != "undefined") {
-	if (relevantArg == "help") {
-		echoHelp();
-	} else { // Try to read the file and continue on success.
-		fs.readFile(relevantArg, (err, data) => {
-			if (err) {
-				console.error(err);
-				console.debug("Argument is not a valid path or file doesn't exist. Use 'help' for usage information.");
-				process.exit(1);
-			}
-			let jsonObj = JSON.parse(data);
-			generateCards(jsonObj);
-		})
+/**
+ *
+ */
+function main() {
+	/**
+	 * 
+	 * @param {*} arg
+	 * @param {*} callback 
+	 */
+	function _helper(arg, callback) {
+		if (arg != undefined) {
+			fs.readFile(arg, (err, data) => {
+				if (err) {
+					console.error(err);
+					console.debug("Argument is not a valid path or file doesn't exist. Use 'help' for usage information.");
+					return;
+				}
+				let jsonObj = JSON.parse(data);
+				callback(jsonObj);
+			});
+		}
 	}
-} else {
-	console.debug(" No Argument was given. Use 'help' for usage information.");
+
+	console.log("Starting...");
+	const args = parseArguments(process.argv.slice(2));
+	if (!fs.existsSync("./out/")) {
+		fs.mkdirSync("./out");
+	}
+	// Build story cards
+	_helper(args.story, async function(jsonObj) {
+		console.log("Building your story cards...");
+		buildStoryCards(jsonObj.title, jsonObj.story_cards);
+	});
+	// Build fog tiles
+	_helper(args.fog, function(jsonObj) {
+		console.log("Building your fog tiles...");
+		buildFogTiles(jsonObj);
+	});
+
+	/*
+	console.log("Merging PDF files...");
+	mergePDFs.merge(process.cwd() + "/out");
+	*/
 }
 
 /**
- * Build Andor cards from a JSON object
- * @param {object} jsonObj
+ * 
+ * @param {*} args
  */
-function generateCards(jsonObj) {
-	// Build story cards
-	if (jsonObj.story_cards == undefined) {
-		console.debug("Nothing to do for story cards...");
-	} else {
-		console.log("Building your story cards...");
-		buildStoryCards(jsonObj.title, jsonObj.story_cards);
+function parseArguments(args) {
+	const cwd = process.cwd();
+	let storyArg = args.find((el) => {return el.includes("-story=")});
+	let fogArg = args.find((el) => {return el.includes("-fog=")});
+	if (storyArg != undefined) {
+		storyArg = storyArg.split('=')[1];
 	}
+	if (fogArg != undefined) {
+		fogArg = fogArg.split('=')[1];
+	}
+	return {story: storyArg, fog: fogArg};
 }
 
 /**
@@ -48,43 +77,56 @@ function generateCards(jsonObj) {
  * @param {string} title        Title of your campaign
  * @param {object} story_cards  Object conaining card declarations
  */
-async function buildStoryCards(title, story_cards) {
-	await (async () => {
-		for (i = 0; i < story_cards.length; i++) {
-			let params = [];
-			params.push("title="+title);
-			params.push("index_1="+story_cards[i].index);
-			params.push("content_1="+story_cards[i].content);
-			if (story_cards[i].background) {
-				params.push("background_1="+story_cards[i].background);
-			} else {
-				// assets/Andor_Blankocard-1.png
-				params.push("background_1=assets/Andor_Blankocard-1.png");
-			}
-			i++;
-			if (i < story_cards.length) {
-				params.push("index_2="+story_cards[i].index);
-				params.push("content_2="+story_cards[i].content);
-				if (story_cards[i].background) {
-					params.push("background_2="+story_cards[i].background);
-				} else {
-					params.push("background_2=assets/Andor_Blankocard-1.png");
-				}
-			}
-			(async (params, index) => {
-				const browser = await puppeteer.launch({headless: true});
-				const page = await browser.newPage();
-				await page.goto("file:///"
-					+ process.cwd()
-					+ "/story-template.html?"
-					+ encodeURI((params.join("&"))));
-				await page.pdf({path: `out/card-${index}.pdf`, format: "A4", printBackground: true});
-				await browser.close();
-			})(params, `${i-1}-${i}`);
+function buildStoryCards(title, story_cards) {
+	for (i = 0; i < story_cards.length; i++) {
+		let params = [];
+		params.push("title="+title);
+		params.push("index_1="+story_cards[i].index);
+		params.push("content_1="+story_cards[i].content);
+		if (story_cards[i].background) {
+			params.push("background_1="+story_cards[i].background);
+		} else {
+			// assets/Andor_Blankocard-1.png
+			params.push("background_1=../assets/Andor_Blankocard-1.png");
 		}
+		i++;
+		if (i < story_cards.length) {
+			params.push("index_2="+story_cards[i].index);
+			params.push("content_2="+story_cards[i].content);
+			if (story_cards[i].background) {
+				params.push("background_2="+story_cards[i].background);
+			} else {
+				params.push("background_2=../assets/Andor_Blankocard-1.png");
+			}
+		}
+		(async (params, index) => {
+			const browser = await puppeteer.launch({headless: true});
+			const page = await browser.newPage();
+			await page.goto("file:///"
+				+ process.cwd()
+				+ "/templates/story-template.html?"
+				+ encodeURI(params.join("&")));
+			await page.pdf({path: `out/card-${index}.pdf`, format: "A4", printBackground: true});
+			await browser.close();
+		})(params, `${i}-${i+1}`);
+	}
+}
+
+/**
+ *
+ * @param {*} jsonObj
+ */
+function buildFogTiles(jsonObj) {
+	(async () => {
+		const browser = await puppeteer.launch({headless: true});
+		const page = await browser.newPage();
+		await page.goto("file:///"
+			+ process.cwd()
+			+ "/templates/fog-template.html?json="
+			+ encodeURI(JSON.stringify(jsonObj)));
+		await page.pdf({path: `out/fog.pdf`, format: "A4"});
+		await browser.close();
 	})();
-	console.log("Merging PDF files...");
-	await mergePDFs.merge(process.cwd() + "/out");
 }
 
 function echoHelp() {

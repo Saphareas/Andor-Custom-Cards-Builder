@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<style>
+		@font-face {
+			font-family: "Abhaya Libre";
+			src: url("../assets/Abhaya Libre/AbhayaLibre-Regular.ttf");
+		}
+		@font-face {
+			font-family: "Abhaya Libre";
+			src: url("../assets/Abhaya Libre/AbhayaLibre-Bold.ttf");
+			font-weight: bold;
+		}
+		body {
+			width: 21cm;
+			height: 29.7cm;
+			font-family: "Abhaya Libre", "Noto Serif", serif;
+		}
+		body, p {
+			margin: 0;
+			padding: 0;
+		}
+		.template {
+			height: 100%;
+			width: 100%;
+			display: grid;
+			grid-template-areas:
+				". . . ."
+				". . . ."
+				". . . ."
+				". . . ."
+				". . . ."
+				". . . .";
+			grid-template-rows: 109px 1fr 14px 14px 1fr 70px;
+			grid-template-columns: 95px 1fr 1fr 95px;
+		}
+		#card_1, #card_2 {
+			grid-column: 1 / 5;
+			background-repeat: no-repeat;
+			background-size: auto 13cm;
+			background-position-x: center;
+			display: grid;
+		}
+		#card_1 {
+			grid-row: 1 / 4;
+			grid-template-areas:
+				". . . ."
+				". front_1 back_1 ."
+				". . . .";
+			grid-template-rows: 109px 1fr 14px;
+			grid-template-columns: 95px 1fr 1fr 95px;
+			background-position-y: bottom;
+		}
+		#card_2 {
+			grid-row: 4 / 7;
+			grid-template-areas:
+				". . . ."
+				". front_2 back_2 ."
+				". . . .";
+			grid-template-rows: 14px 1fr 70px;
+			grid-template-columns: 95px 1fr 1fr 95px;
+			background-position-y: top;
+		}
+		.front {
+			text-align: center;
+		}
+		.back {
+			padding: 10px 10px;
+			font-size: .7rem;
+		}
+		.title, .title * {
+			font-size: 1rem;
+			font-weight: bold;
+			margin-top: 62.5%;
+		}
+		.card-index {
+			margin-top: 10px;
+			font-size: 7rem;
+			color: white;
+		}
+		.text-outline {
+			text-shadow: 1px 1px 0 #000,
+				-1px 1px 0 #000,
+				1px -1px 0 #000,
+				-1px -1px 0 #000,
+				0px 1px 0 #000,
+				0px -1px 0 #000,
+				-1px 0px 0 #000,
+				1px 0px 0 #000,
+				2px 2px 0 #000,
+				-2px 2px 0 #000,
+				2px -2px 0 #000,
+				-2px -2px 0 #000,
+				0px 2px 0 #000,
+				0px -2px 0 #000,
+				-2px 0px 0 #000,
+				2px 0px 0 #000,
+				1px 2px 0 #000,
+				-1px 2px 0 #000,
+				1px -2px 0 #000,
+				-1px -2px 0 #000,
+				2px 1px 0 #000,
+				-2px 1px 0 #000,
+				2px -1px 0 #000,
+				-2px -1px 0 #000;
+		}
+	</style>
+</head>
+<body>
+	<div id="app" class="template">
+		<div id="card_1" v-bind:style=background_1>
+			<div class="front" style="grid-area:front_1">
+				<p class="title" v-html="title"></p>
+				<p class="card-index text-outline" v-html="index_1"></p>
+			</div>
+			<div class="back" style="grid-area:back_1">
+				<p class="content" v-html="content_1"></p>
+			</div>
+		</div>
+		<div id="card_2" v-bind:style=background_2>
+			<div class="front" style="grid-area:front_2">
+				<p class="title" v-html="title"></p>
+				<p class="card-index text-outline" v-html="index_2"></p>
+			</div>
+			<div class="back" style="grid-area:back_2">
+				<p class="content" v-html="content_2"></p>
+			</div>
+		</div>
+	</div>
+
+	<script src="../lib/vue.min.js"></script>
+	<script>
+		var app = new Vue({
+			el: '#app',
+			data: {
+				title: "",
+				index_1: "",
+				index_2: "",
+				content_1: "",
+				content_2 : "",
+				background_1: "",
+				background_2: ""
+			}
+		});
+	</script>
+	<script src="../lib/marked.min.js"></script>
+	<script>
+		function getUrlParameter(name) {
+			name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+			var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+			var results = regex.exec(location.search);
+			return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+		};
+		["title", "index_1", "index_2", "content_1", "content_2"].forEach(function(str) {
+			Vue.set(app, str, marked(getUrlParameter(str)));
+		});
+		["background_1", "background_2"].forEach(function(str) {
+			Vue.set(app, str, "background-image: url('"+getUrlParameter(str)+"');")
+		});
+	</script>
+</body>
+</html>
