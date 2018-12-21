@@ -8,40 +8,58 @@ const fs = require("fs");
 const puppeteer = require("puppeteer");
 const mergePDFs = require("./lib/mergepdfs.js");
 
-//TODO: Multiple args for story, fog, events, etc
-let relevantArg = process.argv[2];
+main();
 
-// Check if the argument is valid, either 'help' or path to a .json file
-if (relevantArg != null && relevantArg != "undefined") {
-	if (relevantArg == "help") {
-		echoHelp();
-	} else { // Try to read the file and continue on success.
-		fs.readFile(relevantArg, (err, data) => {
-			if (err) {
-				console.error(err);
-				console.debug("Argument is not a valid path or file doesn't exist. Use 'help' for usage information.");
-				process.exit(1);
-			}
-			let jsonObj = JSON.parse(data);
-			generateCards(jsonObj);
-		})
+/**
+ *
+ */
+function main() {
+	/**
+	 * 
+	 * @param {*} arg
+	 * @param {*} callback 
+	 */
+	function _helper(arg, callback) {
+		if (arg != undefined) {
+			fs.readFile(arg, (err, data) => {
+				if (err) {
+					console.error(err);
+					console.debug("Argument is not a valid path or file doesn't exist. Use 'help' for usage information.");
+					return;
+				}
+				let jsonObj = JSON.parse(data);
+				callback(jsonObj);
+			});
+		}
 	}
-} else {
-	console.debug(" No Argument was given. Use 'help' for usage information.");
+
+	console.log("Starting...");
+	const args = parseArguments(process.argv.slice(2));
+	if (!fs.existsSync("./out/")) {
+		fs.mkdirSync("./out");
+	}
+	// Build story cards
+	_helper(args.story, async function(jsonObj) {
+		console.log("Building your story cards...");
+		buildStoryCards(jsonObj.title, jsonObj.story_cards);
+	});
 }
 
 /**
- * Build Andor cards from a JSON object
- * @param {object} jsonObj
+ * 
+ * @param {*} args
  */
-function generateCards(jsonObj) {
-	// Build story cards
-	if (jsonObj.story_cards == undefined) {
-		console.debug("Nothing to do for story cards...");
-	} else {
-		console.log("Building your story cards...");
-		buildStoryCards(jsonObj.title, jsonObj.story_cards);
+function parseArguments(args) {
+	const cwd = process.cwd();
+	let storyArg = args.find((el) => {return el.includes("-story=")});
+	let fogArg = args.find((el) => {return el.includes("-fog=")});
+	if (storyArg != undefined) {
+		storyArg = storyArg.split('=')[1];
 	}
+	if (fogArg != undefined) {
+		fogArg = fogArg.split('=')[1];
+	}
+	return {story: storyArg, fog: fogArg};
 }
 
 /**
