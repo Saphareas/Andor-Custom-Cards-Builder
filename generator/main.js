@@ -48,6 +48,11 @@ function main() {
 		console.log("Building your fog tiles...");
 		buildFogTiles(jsonObj);
 	});
+
+	/*
+	console.log("Merging PDF files...");
+	mergePDFs.merge(process.cwd() + "/out");
+	*/
 }
 
 /**
@@ -72,43 +77,39 @@ function parseArguments(args) {
  * @param {string} title        Title of your campaign
  * @param {object} story_cards  Object conaining card declarations
  */
-async function buildStoryCards(title, story_cards) {
-	await (async () => {
-		for (i = 0; i < story_cards.length; i++) {
-			let params = [];
-			params.push("title="+title);
-			params.push("index_1="+story_cards[i].index);
-			params.push("content_1="+story_cards[i].content);
-			if (story_cards[i].background) {
-				params.push("background_1="+story_cards[i].background);
-			} else {
-				// assets/Andor_Blankocard-1.png
-				params.push("background_1=assets/Andor_Blankocard-1.png");
-			}
-			i++;
-			if (i < story_cards.length) {
-				params.push("index_2="+story_cards[i].index);
-				params.push("content_2="+story_cards[i].content);
-				if (story_cards[i].background) {
-					params.push("background_2="+story_cards[i].background);
-				} else {
-					params.push("background_2=assets/Andor_Blankocard-1.png");
-				}
-			}
-			(async (params, index) => {
-				const browser = await puppeteer.launch({headless: true});
-				const page = await browser.newPage();
-				await page.goto("file:///"
-					+ process.cwd()
-					+ "/story-template.html?"
-					+ encodeURI((params.join("&"))));
-				await page.pdf({path: `out/card-${index}.pdf`, format: "A4", printBackground: true});
-				await browser.close();
-			})(params, `${i-1}-${i}`);
+function buildStoryCards(title, story_cards) {
+	for (i = 0; i < story_cards.length; i++) {
+		let params = [];
+		params.push("title="+title);
+		params.push("index_1="+story_cards[i].index);
+		params.push("content_1="+story_cards[i].content);
+		if (story_cards[i].background) {
+			params.push("background_1="+story_cards[i].background);
+		} else {
+			// assets/Andor_Blankocard-1.png
+			params.push("background_1=../assets/Andor_Blankocard-1.png");
 		}
-	})();
-	console.log("Merging PDF files...");
-	await mergePDFs.merge(process.cwd() + "/out");
+		i++;
+		if (i < story_cards.length) {
+			params.push("index_2="+story_cards[i].index);
+			params.push("content_2="+story_cards[i].content);
+			if (story_cards[i].background) {
+				params.push("background_2="+story_cards[i].background);
+			} else {
+				params.push("background_2=../assets/Andor_Blankocard-1.png");
+			}
+		}
+		(async (params, index) => {
+			const browser = await puppeteer.launch({headless: true});
+			const page = await browser.newPage();
+			await page.goto("file:///"
+				+ process.cwd()
+				+ "/templates/story-template.html?"
+				+ encodeURI(params.join("&")));
+			await page.pdf({path: `out/card-${index}.pdf`, format: "A4", printBackground: true});
+			await browser.close();
+		})(params, `${i}-${i+1}`);
+	}
 }
 
 /**
