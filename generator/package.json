@@ -1,11 +1,11 @@
 {
   "name": "andor-cards-generator",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "",
   "private": true,
   "main": "main.js",
   "scripts": {
-    "test": "node main.js example.json"
+    "test": "node main.js -story=examples/story-example.json -fog=examples/fog-example.json"
   },
   "author": "Fabian Große",
   "license": "GPL-3.0-or-later",
