@@ -43,6 +43,11 @@ function main() {
 		console.log("Building your story cards...");
 		buildStoryCards(jsonObj.title, jsonObj.story_cards);
 	});
+	// Build fog tiles
+	_helper(args.fog, function(jsonObj) {
+		console.log("Building your fog tiles...");
+		buildFogTiles(jsonObj);
+	});
 }
 
 /**
@@ -104,6 +109,23 @@ async function buildStoryCards(title, story_cards) {
 	})();
 	console.log("Merging PDF files...");
 	await mergePDFs.merge(process.cwd() + "/out");
+}
+
+/**
+ *
+ * @param {*} jsonObj
+ */
+function buildFogTiles(jsonObj) {
+	(async () => {
+		const browser = await puppeteer.launch({headless: true});
+		const page = await browser.newPage();
+		await page.goto("file:///"
+			+ process.cwd()
+			+ "/templates/fog-template.html?json="
+			+ encodeURI(JSON.stringify(jsonObj)));
+		await page.pdf({path: `out/fog.pdf`, format: "A4"});
+		await browser.close();
+	})();
 }
 
 function echoHelp() {

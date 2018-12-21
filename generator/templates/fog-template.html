@@ -8,7 +8,6 @@
 			padding: 5mm;
 			width: 21cm;
 			height: 29.7cm;
-			border: 1px solid black;
 		}
 		.flex {
 			display: flex;
@@ -31,35 +30,26 @@
 			</div>
 		</div>
 	</div>
-	<script src="lib/vue.min.js"></script>
+	<script src="../lib/vue.min.js"></script>
 	<script>
 		var app = new Vue({
 			el: '#app',
 			data: {
-				fog_listing: [
-					{img: "assets/fog/fog_gor.png", count: 24},
-					{img: "assets/fog/fog_skral.png", count: 8},
-					{img: "assets/fog/fog_troll.png", count: 8},
-					{img: "assets/fog/fog_bottle.png", count: 8},
-					{img: "assets/fog/fog_nuts.png", count: 16},
-					{img: "assets/fog/fog_2wp.png", count: 8},
-					{img: "assets/fog/fog_3wp.png", count: 8},
-					{img: "assets/fog/fog_-3wp.png", count: 8}
-				]
+				fog_listing: []
 			}
 		});
 	</script>
 	<script>
-		const app_node = document.getElementById("app");
-		for (fog of app.fog_listing) {
-			let div = document.createElement("div");
-			div.classList = ["fog"];
-			div.setAttribute("v-for", `n in ${fog.count}`);
-			let img = document.createElement("img");
-			img.setAttribute("v-bind:src", fog.img);
-			div.appendChild(img);
-			app_node.appendChild(div);
-		}
+		function getUrlParameter(name) {
+			name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+			var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+			var results = regex.exec(location.search);
+			return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+		};
+
+		let jsonObj = getUrlParameter("json");
+		jsonObj = JSON.parse(jsonObj);
+		app.fog_listing = jsonObj.fog;
 	</script>
 </body>
 </html>

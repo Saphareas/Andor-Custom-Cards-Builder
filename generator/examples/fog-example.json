@@ -1,0 +1,12 @@
+{
+	"fog": [
+		{"img": "../assets/fog/fog_gor.png", 		"count": 24},
+		{"img": "../assets/fog/fog_skral.png", 	"count": 8},
+		{"img": "../assets/fog/fog_troll.png", 	"count": 8},
+		{"img": "../assets/fog/fog_bottle.png", "count": 8},
+		{"img": "../assets/fog/fog_nuts.png", 	"count": 16},
+		{"img": "../assets/fog/fog_2wp.png", 		"count": 8},
+		{"img": "../assets/fog/fog_3wp.png", 		"count": 8},
+		{"img": "../assets/fog/fog_-3wp.png", 	"count": 8}
+	]
+}
