@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<style>
+		body {
+			margin: 0;
+			padding: 5mm;
+			width: 21cm;
+			height: 29.7cm;
+			border: 1px solid black;
+		}
+		.flex {
+			display: flex;
+			flex-wrap: wrap;
+		}
+		.fog {
+			margin: .5mm;
+		}
+		.fog img {
+			width: 2.5cm;
+			height: 2.5cm;
+		}
+	</style>
+</head>
+<body>
+	<div id="app" class="flex">
+		<div v-for="fog in fog_listing" class="flex">
+			<div v-for="n in fog.count" class="fog">
+				<img v-bind:src="fog.img">
+			</div>
+		</div>
+	</div>
+	<script src="lib/vue.min.js"></script>
+	<script>
+		var app = new Vue({
+			el: '#app',
+			data: {
+				fog_listing: [
+					{img: "assets/fog/fog_gor.png", count: 24},
+					{img: "assets/fog/fog_skral.png", count: 8},
+					{img: "assets/fog/fog_troll.png", count: 8},
+					{img: "assets/fog/fog_bottle.png", count: 8},
+					{img: "assets/fog/fog_nuts.png", count: 16},
+					{img: "assets/fog/fog_2wp.png", count: 8},
+					{img: "assets/fog/fog_3wp.png", count: 8},
+					{img: "assets/fog/fog_-3wp.png", count: 8}
+				]
+			}
+		});
+	</script>
+	<script>
+		const app_node = document.getElementById("app");
+		for (fog of app.fog_listing) {
+			let div = document.createElement("div");
+			div.classList = ["fog"];
+			div.setAttribute("v-for", `n in ${fog.count}`);
+			let img = document.createElement("img");
+			img.setAttribute("v-bind:src", fog.img);
+			div.appendChild(img);
+			app_node.appendChild(div);
+		}
+	</script>
+</body>
+</html>

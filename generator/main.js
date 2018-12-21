@@ -8,6 +8,7 @@ const fs = require("fs");
 const puppeteer = require("puppeteer");
 const mergePDFs = require("./lib/mergepdfs.js");
 
+//TODO: Multiple args for story, fog, events, etc
 let relevantArg = process.argv[2];
 
 // Check if the argument is valid, either 'help' or path to a .json file
