@@ -7,11 +7,15 @@
 			margin: 0;
 			padding: 5mm;
 			width: 21cm;
-			height: 29.7cm;
+			min-height: 29.7cm;
 		}
-		.flex {
+		.flex-wrap {
 			display: flex;
 			flex-wrap: wrap;
+		}
+		.flex-nowrap {
+			display: flex;
+			flex-wrap: nowrap;
 		}
 		.fog {
 			margin: .5mm;
@@ -23,8 +27,8 @@
 	</style>
 </head>
 <body>
-	<div id="app" class="flex">
-		<div v-for="fog in fog_listing" class="flex">
+	<div id="app" class="flex-wrap">
+		<div v-for="fog in fog_listing" class="flex-nowrap">
 			<div v-for="n in fog.count" class="fog">
 				<img v-bind:src="fog.img">
 			</div>

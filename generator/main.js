@@ -39,7 +39,7 @@ function main() {
 		fs.mkdirSync("./out");
 	}
 	// Build story cards
-	_helper(args.story, async function(jsonObj) {
+	_helper(args.story, function(jsonObj) {
 		console.log("Building your story cards...");
 		buildStoryCards(jsonObj.title, jsonObj.story_cards);
 	});
@@ -75,7 +75,7 @@ function parseArguments(args) {
 /**
  * Build Andor story cards and output as ready-to-print PDF files
  * @param {string} title        Title of your campaign
- * @param {object} story_cards  Object conaining card declarations
+ * @param {object} story_cards  Object containing card declarations
  */
 function buildStoryCards(title, story_cards) {
 	for (i = 0; i < story_cards.length; i++) {
@@ -117,16 +117,37 @@ function buildStoryCards(title, story_cards) {
  * @param {*} jsonObj
  */
 function buildFogTiles(jsonObj) {
-	(async () => {
+	/**
+	 * 
+	 * @param {*} slice
+	 * @param {*} counter
+	 */
+	async function _helper(slice, counter) {
 		const browser = await puppeteer.launch({headless: true});
 		const page = await browser.newPage();
 		await page.goto("file:///"
 			+ process.cwd()
 			+ "/templates/fog-template.html?json="
-			+ encodeURI(JSON.stringify(jsonObj)));
-		await page.pdf({path: `out/fog.pdf`, format: "A4"});
+			+ encodeURI(JSON.stringify(slice)));
+		await page.pdf({path: `out/fog-${counter}.pdf`, format: "A4"});
 		await browser.close();
-	})();
+	}
+
+	jsonObj.fog.forEach(el => {
+		if (el.count > 8)
+			el.count = 8;
+	});
+
+	let fogSlice = {};
+	let i = 1;
+	while (jsonObj.fog.length > 11) {
+		fogSlice = {};
+		fogSlice.fog = jsonObj.fog.slice(0, 11);
+		_helper(fogSlice, i++);
+		jsonObj.fog = jsonObj.fog.slice(11, jsonObj.fog.length);
+	}
+	fogSlice.fog = jsonObj.fog;
+	_helper(fogSlice, i++);
 }
 
 function echoHelp() {
