@@ -5,7 +5,10 @@
   "private": true,
   "main": "main.js",
   "scripts": {
-    "test": "node main.js -story=examples/story-example.json -fog=examples/fog-example.json"
+    "test": "node main.js --story=examples/story-example.json --fog=./examples/fog-example.json --events=./examples/events-example.json",
+    "test-story": "node main.js --story=./examples/story-example.json",
+    "test-fog": "node main.js --fog=./examples/fog-example.json",
+    "test-events": "node main.js --events=./examples/events-example.json"
   },
   "author": "Fabian Große",
   "license": "GPL-3.0-or-later",
