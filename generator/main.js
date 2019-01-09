@@ -58,7 +58,7 @@ function main() {
 }
 
 /**
- * Get launch arguments (prefixed with '-')
+ * Get launch arguments (prefixed with '--')
  * @param {*} args
  * @returns {object} Collection of arguments
  */
@@ -87,6 +87,7 @@ function parseArguments(args) {
  * Build Andor story cards and save as ready-to-print PDF files.
  * @param {string} title        Title of your campaign.
  * @param {object} story_cards  Object containing card declarations.
+ * @param {string} outDir				Target directory for the generated files.
  */
 function buildStoryCards(title, story_cards, outDir) {
 	for (i = 0; i < story_cards.length; i++) {
@@ -126,10 +127,9 @@ function buildStoryCards(title, story_cards, outDir) {
 /**
  * Build Andor fog tiles and save as ready-to-print PDF files.
  * @param {object} jsonObj	Object containing an array of fog declarations.
+ * @param {string} outDir		Target directory for the generated files.
  */
 function buildFogTiles(jsonObj, outDir) {
-	(async () => {
-function buildFogTiles(jsonObj) {
 	/**
 	 * Builds one page of fog
 	 * @param {object} slice		Object containing an array of fog declarations (max. 11 rows).
@@ -141,10 +141,8 @@ function buildFogTiles(jsonObj) {
 		await page.goto("file:///"
 			+ process.cwd()
 			+ "/templates/fog-template.html?json="
-			+ encodeURI(JSON.stringify(jsonObj)));
-		await page.pdf({path: `${outDir}/fog.pdf`, format: "A4"});
 			+ encodeURI(JSON.stringify(slice)));
-		await page.pdf({path: `out/fog-${counter}.pdf`, format: "A4"});
+		await page.pdf({path: `${outDir}/fog.pdf`, format: "A4"});
 		await browser.close();
 	}
 
