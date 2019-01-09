@@ -8,10 +8,11 @@ const fs = require("fs");
 const puppeteer = require("puppeteer");
 const mergePDFs = require("./lib/mergepdfs.js");
 
+// Entry point
 main();
 
 /**
- *
+ * Main function
  */
 function main() {
 	/**
@@ -40,7 +41,7 @@ function main() {
 		fs.mkdirSync(args.outDir);
 	}
 	// Build story cards
-	_helper(args.story, async function(jsonObj) {
+	_helper(args.story, function(jsonObj) {
 		console.log("Building your story cards...");
 		buildStoryCards(jsonObj.title, jsonObj.story_cards, args.outDir);
 	});
@@ -57,8 +58,9 @@ function main() {
 }
 
 /**
- *
+ * Get launch arguments (prefixed with '-')
  * @param {*} args
+ * @returns {object} Collection of arguments
  */
 function parseArguments(args) {
 	const cwd = process.cwd();
@@ -82,9 +84,9 @@ function parseArguments(args) {
 }
 
 /**
- * Build Andor story cards and output as ready-to-print PDF files
- * @param {string} title        Title of your campaign
- * @param {object} story_cards  Object conaining card declarations
+ * Build Andor story cards and save as ready-to-print PDF files.
+ * @param {string} title        Title of your campaign.
+ * @param {object} story_cards  Object containing card declarations.
  */
 function buildStoryCards(title, story_cards, outDir) {
 	for (i = 0; i < story_cards.length; i++) {
@@ -122,11 +124,18 @@ function buildStoryCards(title, story_cards, outDir) {
 }
 
 /**
- *
- * @param {*} jsonObj
+ * Build Andor fog tiles and save as ready-to-print PDF files.
+ * @param {object} jsonObj	Object containing an array of fog declarations.
  */
 function buildFogTiles(jsonObj, outDir) {
 	(async () => {
+function buildFogTiles(jsonObj) {
+	/**
+	 * Builds one page of fog
+	 * @param {object} slice		Object containing an array of fog declarations (max. 11 rows).
+	 * @param {number} counter	Current page Number. Will be added to the file name.
+	 */
+	async function _helper(slice, counter) {
 		const browser = await puppeteer.launch({headless: true});
 		const page = await browser.newPage();
 		await page.goto("file:///"
@@ -134,8 +143,26 @@ function buildFogTiles(jsonObj, outDir) {
 			+ "/templates/fog-template.html?json="
 			+ encodeURI(JSON.stringify(jsonObj)));
 		await page.pdf({path: `${outDir}/fog.pdf`, format: "A4"});
+			+ encodeURI(JSON.stringify(slice)));
+		await page.pdf({path: `out/fog-${counter}.pdf`, format: "A4"});
 		await browser.close();
-	})();
+	}
+
+	jsonObj.fog.forEach(el => {
+		if (el.count > 8)
+			el.count = 8;
+	});
+
+	let fogSlice = {};
+	let i = 1;
+	while (jsonObj.fog.length > 11) {
+		fogSlice = {};
+		fogSlice.fog = jsonObj.fog.slice(0, 11);
+		_helper(fogSlice, i++);
+		jsonObj.fog = jsonObj.fog.slice(11, jsonObj.fog.length);
+	}
+	fogSlice.fog = jsonObj.fog;
+	_helper(fogSlice, i++);
 }
 
 function echoHelp() {
