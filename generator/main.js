@@ -8,14 +8,15 @@ const fs = require("fs");
 const puppeteer = require("puppeteer");
 const mergePDFs = require("./lib/mergepdfs.js");
 
+// Entry point
 main();
 
 /**
- *
+ * Main function
  */
 function main() {
 	/**
-	 * 
+	 *
 	 * @param {*} arg
 	 * @param {*} callback 
 	 */
@@ -56,8 +57,9 @@ function main() {
 }
 
 /**
- * 
+ * Get launch arguments (prefixed with '-')
  * @param {*} args
+ * @returns {object} Collection of arguments
  */
 function parseArguments(args) {
 	const cwd = process.cwd();
@@ -73,9 +75,9 @@ function parseArguments(args) {
 }
 
 /**
- * Build Andor story cards and output as ready-to-print PDF files
- * @param {string} title        Title of your campaign
- * @param {object} story_cards  Object containing card declarations
+ * Build Andor story cards and save as ready-to-print PDF files.
+ * @param {string} title        Title of your campaign.
+ * @param {object} story_cards  Object containing card declarations.
  */
 function buildStoryCards(title, story_cards) {
 	for (i = 0; i < story_cards.length; i++) {
@@ -113,14 +115,14 @@ function buildStoryCards(title, story_cards) {
 }
 
 /**
- *
- * @param {*} jsonObj
+ * Build Andor fog tiles and save as ready-to-print PDF files.
+ * @param {object} jsonObj	Object containing an array of fog declarations.
  */
 function buildFogTiles(jsonObj) {
 	/**
-	 * 
-	 * @param {*} slice
-	 * @param {*} counter
+	 * Builds one page of fog
+	 * @param {object} slice		Object containing an array of fog declarations (max. 11 rows).
+	 * @param {number} counter	Current page Number. Will be added to the file name.
 	 */
 	async function _helper(slice, counter) {
 		const browser = await puppeteer.launch({headless: true});
