@@ -163,7 +163,9 @@ function buildFogTiles(jsonObj, outDir) {
 	_helper(fogSlice, i++);
 }
 
+// TODO: function buildEventCards
+
 function echoHelp() {
-	let helpString = `//TODO: help string`;
+	let helpString = `TODO: help string`;
 	console.log(helpString);
 }

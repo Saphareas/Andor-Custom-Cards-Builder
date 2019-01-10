@@ -28,6 +28,7 @@ To use it with your own JSON file, use
 ```bash
 node main.js -story=</path/to/your-story.json> -fog=</path/to/your-fog.json>
 ```
+TODO: Update Usage
 
 Your files should be valid JSON and should look like the [example files](generator/examples).
 
