@@ -129,7 +129,7 @@ function buildStoryCards(title, story_cards, outDir) {
  * @param {object} jsonObj	Object containing an array of fog declarations.
  * @param {string} outDir		Target directory for the generated files.
  */
-function buildFogTiles(jsonObj, outDir) {
+async function buildFogTiles(jsonObj, outDir) {
 	/**
 	 * Builds one page of fog
 	 * @param {object} slice		Object containing an array of fog declarations (max. 11 rows).
@@ -142,7 +142,7 @@ function buildFogTiles(jsonObj, outDir) {
 			+ process.cwd()
 			+ "/templates/fog-template.html?json="
 			+ encodeURI(JSON.stringify(slice)));
-		await page.pdf({path: `${outDir}/fog.pdf`, format: "A4"});
+		await page.pdf({path: `${outDir}/fog-${counter}.pdf`, format: "A4"});
 		await browser.close();
 	}
 
@@ -156,11 +156,11 @@ function buildFogTiles(jsonObj, outDir) {
 	while (jsonObj.fog.length > 11) {
 		fogSlice = {};
 		fogSlice.fog = jsonObj.fog.slice(0, 11);
-		_helper(fogSlice, i++);
+		await _helper(fogSlice, i++);
 		jsonObj.fog = jsonObj.fog.slice(11, jsonObj.fog.length);
 	}
 	fogSlice.fog = jsonObj.fog;
-	_helper(fogSlice, i++);
+	await _helper(fogSlice, i++);
 }
 
 // TODO: function buildEventCards
