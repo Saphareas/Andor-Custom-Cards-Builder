@@ -50,6 +50,11 @@ function main() {
 		console.log("Building your fog tiles...");
 		buildFogTiles(jsonObj, args.outDir);
 	});
+	// Build event cards
+	_helper(args.events, function(jsonObj) {
+		console.log("Building your event cards...");
+		buildEventCards(jsonObj, args.outDir);
+	});
 
 	/*
 	console.log("Merging PDF files...");
@@ -76,18 +81,22 @@ function parseArguments(args) {
 	let fogArg = args.find((el) => {return el.includes("--fog=")});
 	if (fogArg != undefined)
 		fogArg = fogArg.split('=')[1];
+	let eventsArg = args.find((el) => {return el.includes("--events=")});
+	if (eventsArg != undefined)
+		eventsArg = eventsArg.split('=')[1];
 	return {
 		outDir: outDir,
 		story: storyArg,
-		fog: fogArg
+		fog: fogArg,
+		events: eventsArg
 	};
 }
 
 /**
  * Build Andor story cards and save as ready-to-print PDF files.
- * @param {string} title        Title of your campaign.
- * @param {object} story_cards  Object containing card declarations.
- * @param {string} outDir				Target directory for the generated files.
+ * @param {string} title		Title of your campaign.
+ * @param {object} story_cards	Object containing card declarations.
+ * @param {string} outDir		Target directory for the generated files.
  */
 function buildStoryCards(title, story_cards, outDir) {
 	for (i = 0; i < story_cards.length; i++) {
@@ -127,7 +136,7 @@ function buildStoryCards(title, story_cards, outDir) {
 /**
  * Build Andor fog tiles and save as ready-to-print PDF files.
  * @param {object} jsonObj	Object containing an array of fog declarations.
- * @param {string} outDir		Target directory for the generated files.
+ * @param {string} outDir	Target directory for the generated files.
  */
 function buildFogTiles(jsonObj, outDir) {
 	/**
@@ -163,7 +172,39 @@ function buildFogTiles(jsonObj, outDir) {
 	_helper(fogSlice, i++);
 }
 
-// TODO: function buildEventCards
+/**
+ *
+ * @param {*} jsonObj	Object containing an array of event card declarations.
+ * @param {*} outDir	Target directory for the generated files.
+ */
+async function buildEventCards(jsonObj, outDir) {
+	/**
+	 * Builds one page of event cards
+	 * @param {object} slice	Object containing an array of event card declarations (max. 8).
+	 * @param {number} counter	Current page Number. Will be added to the file name.
+	 */
+	async function _helper(slice, counter) {
+		const browser = await puppeteer.launch({headless: true});
+		const page = await browser.newPage();
+		await page.goto("file:///"
+			+ process.cwd()
+			+ "/templates/events-template.html?json="
+			+ encodeURI(JSON.stringify(slice)));
+		await page.pdf({path: `${outDir}/event_cards-${counter}.pdf`, format: "A4", printBackground: true});
+		await browser.close();
+	}
+
+	let cardsSlice = {};
+	let i = 1;
+	while (jsonObj.cards.length > 8) {
+		cardsSlice = {};
+		cardsSlice.cards = jsonObj.cards.slice(0, 8);
+		await _helper(cardsSlice, i++);
+		jsonObj.cards = jsonObj.cards.slice(8, jsonObj.cards.length);
+	}
+	cardsSlice.cards = jsonObj.cards;
+	await _helper(cardsSlice, i++);
+}
 
 function echoHelp() {
 	let helpString = `TODO: help string`;
