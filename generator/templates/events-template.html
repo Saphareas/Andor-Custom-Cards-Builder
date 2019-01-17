@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<style>
+		@font-face {
+			font-family: "Abhaya Libre";
+			src: url("../assets/Abhaya Libre/AbhayaLibre-Regular.ttf");
+		}
+		body {
+			margin: 0;
+			width: 21cm;
+			min-height: 29.7cm;
+			font-family: "Abhaya Libre", "Noto Serif", serif;
+			font-size: .7rem;
+		}
+		#app {
+			margin: 0 auto;
+			max-width: calc(2 * 9.5cm + 4 * 0.4cm - 0.4cm);
+		}
+		.flex-wrap {
+			display: flex;
+			flex-wrap: wrap;
+		}
+		.card {
+			border: 1px dashed grey;
+			width: 9.2cm;
+			height: 6cm;
+			line-height: 6cm;
+			margin: .4cm;
+			background-image: url("../assets/event_sprite.png");
+			background-size: 100% 300%;
+			text-align: center;
+			position: relative;
+		}
+		.card-bg {
+			background-position-y: -6cm;
+		}
+		.card-bg.shieldable {
+			background-position-y: -12cm;
+		}
+		.card > p {
+			display: inline-block;
+			vertical-align: middle;
+			line-height: normal;
+		}
+		.card > .text {
+			margin: 0 30%;
+		}
+		.card > .index {
+			margin: 0;
+			position: absolute !important;
+			bottom: 3mm;
+			left: 3mm;
+		}
+	</style>
+</head>
+<body>
+	<div id="app" class="flex-wrap">
+		<div v-for="card in cards" class="card card-bg" v-bind:class="{ shieldable: card.isShieldable }">
+			<p class="text" v-html="card.text"></p>
+			<p class="index">{{ card.index }}</p>
+		</div>
+	</div>
+	<script src="../lib/vue.min.js"></script>
+	<script>
+		var app = new Vue({
+			el: '#app',
+			data: {
+				cards: []
+			}
+		});
+	</script>
+	<script>
+		function getUrlParameter(name) {
+			name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+			var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+			var results = regex.exec(location.search);
+			return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+		};
+
+		let jsonObj = getUrlParameter("json");
+		jsonObj = JSON.parse(jsonObj);
+		app.cards = jsonObj.cards;
+	</script>
+</body>
+</html>
