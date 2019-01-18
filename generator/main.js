@@ -204,6 +204,16 @@ async function buildEventCards(jsonObj, outDir) {
 	}
 	cardsSlice.cards = jsonObj.cards;
 	await _helper(cardsSlice, i++);
+
+	if (jsonObj.printBacks) {
+		let backs = [];
+		for (j=0; j<8; j++) {
+			backs.push({isBack: true});
+		}
+		await _helper(backs, "backs");
+	}
+
+	// TODO: Property "graphic"/"sprite": path/to/custom/sprite
 }
 
 function echoHelp() {

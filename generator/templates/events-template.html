@@ -30,13 +30,14 @@
 			margin: .4cm;
 			background-image: url("../assets/event_sprite.png");
 			background-size: 100% 300%;
+			background-position-y: -6cm;
 			text-align: center;
 			position: relative;
 		}
-		.card-bg {
-			background-position-y: -6cm;
+		.card-back {
+			background-position-y: unset;
 		}
-		.card-bg.shieldable {
+		.card.shieldable {
 			background-position-y: -12cm;
 		}
 		.card > p {
@@ -57,7 +58,7 @@
 </head>
 <body>
 	<div id="app" class="flex-wrap">
-		<div v-for="card in cards" class="card card-bg" v-bind:class="{ shieldable: card.isShieldable }">
+		<div v-for="card in cards" class="card" v-bind:class="{ 'card-back': card.isBack, shieldable: card.isShieldable }">
 			<p class="text" v-html="card.text"></p>
 			<p class="index">{{ card.index }}</p>
 		</div>
