@@ -28,7 +28,6 @@
 			height: 6cm;
 			line-height: 6cm;
 			margin: .4cm;
-			background-image: url("../assets/event_sprite.png");
 			background-size: 100% 300%;
 			background-position-y: -6cm;
 			text-align: center;
@@ -58,7 +57,7 @@
 </head>
 <body>
 	<div id="app" class="flex-wrap">
-		<div v-for="card in cards" class="card" v-bind:class="{ 'card-back': card.isBack, shieldable: card.isShieldable }">
+		<div v-for="card in cards" class="card" v-bind:class="{ 'card-back': card.isBack, shieldable: card.isShieldable }" v-bind:style="{ 'background-image': 'url(' + card.image + ')' }">
 			<p class="text" v-html="card.text"></p>
 			<p class="index">{{ card.index }}</p>
 		</div>
@@ -82,6 +81,10 @@
 
 		let cardsParam = JSON.parse(getUrlParameter("cards"));
 		app.cards = cardsParam;
+		app.cards.forEach(card => {
+			if (!card.image)
+				card.image = "../assets/event_sprite.png";
+		});
 	</script>
 </body>
 </html>

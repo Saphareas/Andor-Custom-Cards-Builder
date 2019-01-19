@@ -213,8 +213,6 @@ async function buildEventCards(jsonObj, outDir) {
 		}
 		await _helper(backs, "backs");
 	}
-
-	// TODO: Property "graphic"/"sprite": path/to/custom/sprite
 }
 
 function echoHelp() {
