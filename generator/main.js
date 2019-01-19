@@ -188,21 +188,22 @@ async function buildEventCards(jsonObj, outDir) {
 		const page = await browser.newPage();
 		await page.goto("file:///"
 			+ process.cwd()
-			+ "/templates/events-template.html?json="
+			+ "/templates/events-template.html?cards="
 			+ encodeURI(JSON.stringify(slice)));
 		await page.pdf({path: `${outDir}/event_cards-${counter}.pdf`, format: "A4", printBackground: true});
 		await browser.close();
 	}
 
+	let cards = jsonObj.cards;
 	let cardsSlice = {};
 	let i = 1;
-	while (jsonObj.cards.length > 8) {
-		cardsSlice = {};
-		cardsSlice.cards = jsonObj.cards.slice(0, 8);
-		await _helper(cardsSlice, i++);
-		jsonObj.cards = jsonObj.cards.slice(8, jsonObj.cards.length);
+	while (cards.length > 8) {
+		cardsSlice = cards.slice(0, 8);
+		await _helper(cardsSlice, i);
+		cards = cards.slice(8, cards.length);
+		i++;
 	}
-	cardsSlice.cards = jsonObj.cards;
+	cardsSlice = cards;
 	await _helper(cardsSlice, i++);
 
 	if (jsonObj.printBacks) {

@@ -80,9 +80,8 @@
 			return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 		};
 
-		let jsonObj = getUrlParameter("json");
-		jsonObj = JSON.parse(jsonObj);
-		app.cards = jsonObj.cards;
+		let cardsParam = JSON.parse(getUrlParameter("cards"));
+		app.cards = cardsParam;
 	</script>
 </body>
 </html>
