@@ -103,21 +103,20 @@ function buildStoryCards(title, story_cards, outDir) {
 		let params = [];
 		params.push("title="+title);
 		params.push("index_1="+story_cards[i].index);
-		params.push("content_1="+story_cards[i].content);
-		if (story_cards[i].background) {
-			params.push("background_1="+story_cards[i].background);
+		params.push("text_1="+story_cards[i].text);
+		if (story_cards[i].image) {
+			params.push("image_1="+story_cards[i].image);
 		} else {
-			// assets/Andor_Blankocard-1.png
-			params.push("background_1=../assets/Andor_Blankocard-1.png");
+			params.push("image_1=../assets/Andor_Blankocard-1.png");
 		}
 		i++;
 		if (i < story_cards.length) {
 			params.push("index_2="+story_cards[i].index);
-			params.push("content_2="+story_cards[i].content);
-			if (story_cards[i].background) {
-				params.push("background_2="+story_cards[i].background);
+			params.push("text_2="+story_cards[i].text);
+			if (story_cards[i].image) {
+				params.push("image_2="+story_cards[i].image);
 			} else {
-				params.push("background_2=../assets/Andor_Blankocard-1.png");
+				params.push("image=../assets/Andor_Blankocard-1.png");
 			}
 		}
 		(async (params, index) => {
