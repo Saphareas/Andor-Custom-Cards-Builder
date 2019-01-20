@@ -16,42 +16,46 @@ main();
  */
 function main() {
 	/**
-	 *
-	 * @param {*} arg
-	 * @param {*} callback
+	 * Tries to read the file in 'arg', tries to parse it as JSON and then passes the JSON object to the 'callback'.
+	 * @param {String} arg			Path to JSON file
+	 * @param {Function} callback	Function to execute on the file
 	 */
-	function _helper(arg, callback) {
+	function _readFile(arg, callback) {
 		if (arg != undefined) {
 			fs.readFile(arg, (err, data) => {
 				if (err) {
 					console.error(err);
-					console.debug("Argument is not a valid path or file doesn't exist. Use 'help' for usage information.");
+					console.log("Argument is not a valid path or file doesn't exist. Use 'help' for usage information.");
 					return;
 				}
-				let jsonObj = JSON.parse(data);
-				callback(jsonObj);
+				try {
+					let jsonObj = JSON.parse(data);
+					callback(jsonObj);
+				} catch (ex) {
+					console.error(`Something went wrong while parsing ${arg} into JSON!`);
+					console.error(ex);
+				}
 			});
 		}
 	}
 
 	const args = parseArguments(process.argv.slice(2));
-	//TODO: handle 'help' argument
 	console.log("Starting...");
 	if (!fs.existsSync(args.outDir)) {
 		fs.mkdirSync(args.outDir);
 	}
 	// Build story cards
-	_helper(args.story, function(jsonObj) {
+	_readFile(args.story, function(jsonObj) {
 		console.log("Building your story cards...");
 		buildStoryCards(jsonObj.title, jsonObj.story_cards, args.outDir);
 	});
 	// Build fog tiles
-	_helper(args.fog, function(jsonObj) {
+	_readFile(args.fog, function(jsonObj) {
 		console.log("Building your fog tiles...");
 		buildFogTiles(jsonObj, args.outDir);
 	});
 	// Build event cards
-	_helper(args.events, function(jsonObj) {
+	_readFile(args.events, function(jsonObj) {
 		console.log("Building your event cards...");
 		buildEventCards(jsonObj, args.outDir);
 	});
@@ -64,26 +68,35 @@ function main() {
 
 /**
  * Get launch arguments (prefixed with '--')
- * @param {*} args
+ * @param {String Array} args
  * @returns {object} Collection of arguments
  */
 function parseArguments(args) {
 	const cwd = process.cwd();
-	//TODO: handle 'help' argument
+	//console.debug(args);
+	if (args[0] == "-h" || args[0] == "--help" || args == 0) { // [] == [] => false, but [] == 0 => true WTF?
+		echoHelp();
+		process.exit();
+	}
+
 	let outDir = args.find((el) => {return el.includes("--out-dir=")});
 	if (outDir != undefined)
 		outDir = outDir.split('=')[1];
 	else
 		outDir = "./out";
+
 	let storyArg = args.find((el) => {return el.includes("--story=")});
 	if (storyArg != undefined)
 		storyArg = storyArg.split('=')[1];
+
 	let fogArg = args.find((el) => {return el.includes("--fog=")});
 	if (fogArg != undefined)
 		fogArg = fogArg.split('=')[1];
+
 	let eventsArg = args.find((el) => {return el.includes("--events=")});
 	if (eventsArg != undefined)
 		eventsArg = eventsArg.split('=')[1];
+
 	return {
 		outDir: outDir,
 		story: storyArg,
@@ -172,9 +185,9 @@ async function buildFogTiles(jsonObj, outDir) {
 }
 
 /**
- *
- * @param {*} jsonObj	Object containing an array of event card declarations.
- * @param {*} outDir	Target directory for the generated files.
+ * Build Andor event cards and save as ready-to-print PDF files.
+ * @param {Object} jsonObj	Object containing an array of event card declarations.
+ * @param {String} outDir	Target directory for the generated files.
  */
 async function buildEventCards(jsonObj, outDir) {
 	/**
@@ -214,6 +227,9 @@ async function buildEventCards(jsonObj, outDir) {
 	}
 }
 
+/**
+ * Logs a help string to the console
+ */
 function echoHelp() {
 	let helpString = `TODO: help string`;
 	console.log(helpString);
