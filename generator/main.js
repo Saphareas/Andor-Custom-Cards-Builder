@@ -231,6 +231,14 @@ async function buildEventCards(jsonObj, outDir) {
  * Logs a help string to the console
  */
 function echoHelp() {
-	let helpString = `TODO: help string`;
+	let helpString = `
+${require("./package.json").name} ${require("./package.json").version}
+${require("./package.json").description}
+-h/--help                               Get this help text
+--out-dir=</some/folder>                Set the output directory
+--story=</path/to/your-story.json>      Set the path for your story.json file
+--fog=</path/to/your-fog.json>          Set the path for your story.json file
+--events=</path/to/your-events.json>    Set the path for your story.json file
+`;
 	console.log(helpString);
 }
