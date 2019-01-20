@@ -1,0 +1,21 @@
+{
+	"cards": [
+		{ "index": 1, "text": "Lorem ipsum dolor sit amet..." },
+		{ "index": 2, "text": "Lorem ipsum dolor sit amet..." },
+		{ "index": 3, "text": "Lorem ipsum dolor sit amet..." },
+		{ "index": 4, "text": "Lorem ipsum dolor sit amet..." },
+		{ "index": 5, "text": "Lorem ipsum dolor sit amet..." },
+		{ "index": 6, "text": "Lorem ipsum dolor sit amet..." },
+		{ "index": 7, "text": "Lorem ipsum dolor sit amet..." },
+		{ "index": 8, "text": "Lorem ipsum dolor sit amet..." },
+		{ "index": 9, "text": "Lorem ipsum dolor sit amet...", "isShieldable": true },
+		{ "index": 10, "text": "Lorem ipsum dolor sit amet...", "isShieldable": true },
+		{ "index": 11, "text": "Lorem ipsum dolor sit amet...", "isShieldable": true },
+		{ "index": 12, "text": "Lorem ipsum dolor sit amet...", "isShieldable": true },
+		{ "index": 13, "text": "Lorem ipsum dolor sit amet...", "isShieldable": true },
+		{ "index": 14, "text": "Lorem ipsum dolor sit amet...", "isShieldable": true },
+		{ "index": 15, "text": "Lorem ipsum dolor sit amet...", "isShieldable": true },
+		{ "index": 16, "text": "Lorem ipsum dolor sit amet...", "isShieldable": true }
+	],
+	"printBacks": true
+}

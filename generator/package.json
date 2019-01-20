@@ -1,10 +1,11 @@
 {
-  "name": "andor-cards-generator",
-  "version": "0.4.2",
+  "name": "andor-custom-cards-builder",
+  "version": "0.5",
   "description": "",
   "private": true,
   "main": "main.js",
   "scripts": {
+    "start": "node main.js",
     "test": "node main.js --story=examples/story-example.json --fog=./examples/fog-example.json --events=./examples/events-example.json",
     "test-story": "node main.js --story=./examples/story-example.json",
     "test-fog": "node main.js --fog=./examples/fog-example.json",
