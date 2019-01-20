@@ -1,8 +1,8 @@
 # Andor Custom Cards Builder
 
-This is a Fan-project for the board game 'The Legends of Andor'. You can write your own campaigns for this game and I thought I'd build something that generates original-looking cards out of plain text.
+This is a Fan-project for the board game 'The Legends of Andor'. You can write your own campaigns for this game and I thought I'd build something that generates original-looking game assets out of plain text.
 
-I plan to upload the generator as NPM package and wrap as an Electron App with a (hopefully) nice GUI.
+I plan to upload this generator as NPM package and wrap as an Electron App with a (hopefully) nice GUI.
 
 ## Installation
 
@@ -20,32 +20,40 @@ and you are ready to run.
 To run the script with the provided example files, run
 
 ```bash
-npm run test
+npm run test        # To run it for all example files
+npm run test-story  # To run it for just the story cards
+npm run test-fog    # To run it for just the fog tiles
+npm run test-events # To run it for just the event cards
 ```
 
 To use it with your own JSON file, use
 
 ```bash
-node main.js -story=</path/to/your-story.json> -fog=</path/to/your-fog.json>
+node main.js
+# or
+npm start
+# with one or all of the following options
+--story=</path/to/your-story.json>
+--fog=</path/to/your-fog.json>
+--events=</path/to/your-events.json>
 ```
-TODO: Update Usage
 
 Your files should be valid JSON and should look like the [example files](generator/examples).
 
 You can use Markdown and/or `<i>`, `<b>` and `<br>` tags in your text to format it _italic_, **bold** or insert a <br>
 line break.
 
-To override the background of the story cards, you can add a switch in your JSON, like this:
+To override the image used for the story and event cards, you can add a `image` property in your JSON, like this:
 
 ```json
 {
   "index": "A2",
-  "content": "*Lorem ipsum dolor sit amet.",
-  "background": "/path/to/your-background.png"
+  "text": "*Lorem ipsum dolor sit amet.",
+  "image": "/path/to/your-background.png"
 }
 ```
 
-The resulting ready-to-print PDF files will be located in the `generator/out` directory.
+The resulting ready-to-print PDF files will be located in the `generator/out` directory by default. You can use `--out-dir=</some/folder>` to specify a custom output directory.
 
 ## Authors
 
