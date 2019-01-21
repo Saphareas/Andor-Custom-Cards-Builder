@@ -242,3 +242,8 @@ ${require("./package.json").description}
 `;
 	console.log(helpString);
 }
+
+// npm exports
+exports.buildStoryCards = buildStoryCards;
+exports.buildFogTiles = buildFogTiles;
+exports.buildEventCards = buildEventCards;

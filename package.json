@@ -1,8 +1,8 @@
 {
   "name": "andor-custom-cards-builder",
-  "version": "0.5",
+  "version": "0.5.0",
   "description": "",
-  "private": true,
+  "author": "Fabian Große <saphareas@t-online.de>",
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
@@ -11,7 +11,10 @@
     "test-fog": "node main.js --fog=./examples/fog-example.json",
     "test-events": "node main.js --events=./examples/events-example.json"
   },
-  "author": "Fabian Große",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Saphareas/Andor-Custom-Cards-Builder.git"
+  },
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "html-pdf": "^2.2.0",
