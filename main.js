@@ -129,7 +129,7 @@ function buildStoryCards(title, story_cards, outDir) {
 			if (story_cards[i].image) {
 				params.push("image_2="+story_cards[i].image);
 			} else {
-				params.push("image=../assets/Andor_Blankocard-1.png");
+				params.push("image_2=../assets/Andor_Blankocard-1.png");
 			}
 		}
 		(async (params, index) => {
