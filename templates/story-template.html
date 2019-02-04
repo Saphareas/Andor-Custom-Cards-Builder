@@ -109,22 +109,22 @@
 </head>
 <body>
 	<div id="app" class="template">
-		<div id="card_1" v-bind:style=background_1>
+		<div id="card_1" v-bind:style=image_1>
 			<div class="front" style="grid-area:front_1">
 				<p class="title" v-html="title"></p>
 				<p class="card-index text-outline" v-html="index_1"></p>
 			</div>
 			<div class="back" style="grid-area:back_1">
-				<p class="content" v-html="content_1"></p>
+				<p class="content" v-html="text_1"></p>
 			</div>
 		</div>
-		<div id="card_2" v-bind:style=background_2>
+		<div id="card_2" v-bind:style=image_2>
 			<div class="front" style="grid-area:front_2">
 				<p class="title" v-html="title"></p>
 				<p class="card-index text-outline" v-html="index_2"></p>
 			</div>
 			<div class="back" style="grid-area:back_2">
-				<p class="content" v-html="content_2"></p>
+				<p class="content" v-html="text_2"></p>
 			</div>
 		</div>
 	</div>
@@ -137,10 +137,10 @@
 				title: "",
 				index_1: "",
 				index_2: "",
-				content_1: "",
-				content_2 : "",
-				background_1: "",
-				background_2: ""
+				text_1: "",
+				text_2 : "",
+				image_1: "",
+				image_2: ""
 			}
 		});
 	</script>

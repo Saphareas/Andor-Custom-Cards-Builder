@@ -1,0 +1,6 @@
+*.xcf
+out/
+assets/fog/.parts/
+.github/*
+.vscode/*
+.directory
