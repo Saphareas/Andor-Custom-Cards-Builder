@@ -8,9 +8,6 @@ const fs = require("fs");
 const puppeteer = require("puppeteer");
 const mergePDFs = require("./lib/mergepdfs.js");
 
-// Entry point
-main();
-
 /**
  * Main function
  */
@@ -243,7 +240,12 @@ ${require("./package.json").description}
 	console.log(helpString);
 }
 
-// npm exports
-exports.buildStoryCards = buildStoryCards;
-exports.buildFogTiles = buildFogTiles;
-exports.buildEventCards = buildEventCards;
+if (require.main === module) {
+	// Entry point
+	main();
+} else {
+	// npm exports
+	exports.buildStoryCards = buildStoryCards;
+	exports.buildFogTiles = buildFogTiles;
+	exports.buildEventCards = buildEventCards;
+}

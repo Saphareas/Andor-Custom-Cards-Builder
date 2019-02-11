@@ -144,7 +144,6 @@
 			}
 		});
 	</script>
-	<script src="../lib/marked.min.js"></script>
 	<script>
 		function getUrlParameter(name) {
 			name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
@@ -153,7 +152,7 @@
 			return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 		};
 		["title", "index_1", "index_2", "text_1", "text_2"].forEach(function(str) {
-			Vue.set(app, str, marked(getUrlParameter(str)));
+			Vue.set(app, str, getUrlParameter(str));
 		});
 		["image_1", "image_2"].forEach(function(str) {
 			Vue.set(app, str, "background-image: url('"+getUrlParameter(str)+"');")
