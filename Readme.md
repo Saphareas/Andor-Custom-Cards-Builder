@@ -9,7 +9,6 @@ I plan to upload this generator as NPM package and wrap as an Electron App with 
 You will need NodeJS, npm and (of course) git. Clone the repo and cd into it. Then install the dependencies with
 
 ```bash
-cd generator
 npm install
 ```
 
@@ -40,7 +39,7 @@ npm start
 
 Your files should be valid JSON and should look like the [example files](generator/examples).
 
-You can use Markdown and/or `<i>`, `<b>` and `<br>` tags in your text to format it _italic_, **bold** or insert a <br>
+You can use HTML (e.g. `<i>`, `<b>` and `<br>`) tags in your text to format it _italic_, **bold** or insert a <br>
 line break.
 
 To override the image used for the story and event cards, you can add a `image` property in your JSON, like this:
