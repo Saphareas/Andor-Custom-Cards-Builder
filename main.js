@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2018 Fabian Große
+ * Copyright (C) 2019 Fabian Große
  * This software is licensed under the GNU General Public License 3 (GPLv3) or later.
  * For details please see the LICENSE file that should be included with this software.
  */
@@ -150,7 +150,7 @@ function buildStoryCards(title, story_cards, outDir) {
 async function buildFogTiles(jsonObj, outDir) {
 	/**
 	 * Builds one page of fog
-	 * @param {object} slice		Object containing an array of fog declarations (max. 11 rows).
+	 * @param {object} slice	Object containing an array of fog declarations (max. 11 rows).
 	 * @param {number} counter	Current page Number. Will be added to the file name.
 	 */
 	async function _helper(slice, counter) {
@@ -160,7 +160,7 @@ async function buildFogTiles(jsonObj, outDir) {
 			+ process.cwd()
 			+ "/templates/fog-template.html?json="
 			+ encodeURI(JSON.stringify(slice)));
-		await page.pdf({path: `${outDir}/fog-${counter}.pdf`, format: "A4"});
+		await page.pdf({path: `${outDir}/fog.part${counter}.pdf`, format: "A4"});
 		await browser.close();
 	}
 
@@ -179,6 +179,7 @@ async function buildFogTiles(jsonObj, outDir) {
 	}
 	fogSlice.fog = jsonObj.fog;
 	await _helper(fogSlice, i++);
+	await mergePDFs.merge(outDir, "fog.part", "fog-merged.pdf", true);
 }
 
 /**
