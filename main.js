@@ -56,11 +56,6 @@ function main() {
     console.log("Building your event cards...");
     buildEventCards(jsonObj, args.outDir);
   });
-
-  /*
-  console.log("Merging PDF files...");
-  mergePDFs.merge(process.cwd() + "/out");
-  */
 }
 
 /**
@@ -108,38 +103,39 @@ function parseArguments(args) {
  * @param {object} story_cards  Object containing card declarations.
  * @param {string} outDir       Target directory for the generated files.
  */
-function buildStoryCards(title, story_cards, outDir) {
+async function buildStoryCards(title, story_cards, outDir) {
   for (i = 0; i < story_cards.length; i++) {
     let params = [];
-    params.push("title="+title);
-    params.push("index_1="+story_cards[i].index);
-    params.push("text_1="+story_cards[i].text);
+    params.push("title=" + title);
+    params.push("index_1=" + story_cards[i].index);
+    params.push("text_1=" + story_cards[i].text);
     if (story_cards[i].image) {
-      params.push("image_1="+story_cards[i].image);
+      params.push("image_1=" + story_cards[i].image);
     } else {
       params.push("image_1=../assets/Andor_Blankocard-1.png");
     }
     i++;
     if (i < story_cards.length) {
-      params.push("index_2="+story_cards[i].index);
-      params.push("text_2="+story_cards[i].text);
+      params.push("index_2=" + story_cards[i].index);
+      params.push("text_2=" + story_cards[i].text);
       if (story_cards[i].image) {
-        params.push("image_2="+story_cards[i].image);
+        params.push("image_2=" + story_cards[i].image);
       } else {
         params.push("image_2=../assets/Andor_Blankocard-1.png");
       }
     }
-    (async (params, index) => {
+    await (async (params, index) => {
       const browser = await puppeteer.launch({headless: true});
       const page = await browser.newPage();
       await page.goto("file:///"
         + process.cwd()
         + "/templates/story-template.html?"
         + encodeURI(params.join("&")));
-      await page.pdf({path: `${outDir}/card-${index}.pdf`, format: "A4", printBackground: true});
+      await page.pdf({path: `${outDir}/story.part${index}.pdf`, format: "A4", printBackground: true});
       await browser.close();
     })(params, `${i}-${i+1}`);
   }
+  mergePDFs.merge(outDir, "story.part", "story-merged.pdf", true);
 }
 
 /**
@@ -160,7 +156,7 @@ async function buildFogTiles(jsonObj, outDir) {
       + process.cwd()
       + "/templates/fog-template.html?json="
       + encodeURI(JSON.stringify(slice)));
-    await page.pdf({path: `${outDir}/fog-${counter}.pdf`, format: "A4"});
+    await page.pdf({path: `${outDir}/fog.part${counter}.pdf`, format: "A4"});
     await browser.close();
   }
 
@@ -179,7 +175,7 @@ async function buildFogTiles(jsonObj, outDir) {
   }
   fogSlice.fog = jsonObj.fog;
   await _helper(fogSlice, i++);
-  await mergePDFs.merge(outDir, "fog.part", "fog-merged.pdf", true);
+  mergePDFs.merge(outDir, "fog.part", "fog-merged.pdf", true);
 }
 
 /**
@@ -200,7 +196,7 @@ async function buildEventCards(jsonObj, outDir) {
       + process.cwd()
       + "/templates/events-template.html?cards="
       + encodeURI(JSON.stringify(slice)));
-    await page.pdf({path: `${outDir}/event_cards-${counter}.pdf`, format: "A4", printBackground: true});
+    await page.pdf({path: `${outDir}/events.part${counter}.pdf`, format: "A4", printBackground: true});
     await browser.close();
   }
 
@@ -223,6 +219,7 @@ async function buildEventCards(jsonObj, outDir) {
     }
     await _helper(backs, "backs");
   }
+  mergePDFs.merge(outDir, "events.part", "events-merged.pdf", true);
 }
 
 /**
