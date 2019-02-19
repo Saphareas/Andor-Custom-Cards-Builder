@@ -1,59 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<style>
-		body {
-			margin: 0;
-			padding: 5mm;
-			width: 21cm;
-			min-height: 29.7cm;
-		}
-		.flex-wrap {
-			display: flex;
-			flex-wrap: wrap;
-		}
-		.flex-nowrap {
-			display: flex;
-			flex-wrap: nowrap;
-		}
-		.fog {
-			margin: .5mm;
-		}
-		.fog img {
-			width: 2.5cm;
-			height: 2.5cm;
-		}
-	</style>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      margin: 0;
+      padding: 5mm;
+      width: 21cm;
+      min-height: 29.7cm;
+    }
+    .flex-wrap {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .flex-nowrap {
+      display: flex;
+      flex-wrap: nowrap;
+    }
+    .fog {
+      margin: .5mm;
+    }
+    .fog img {
+      width: 2.5cm;
+      height: 2.5cm;
+    }
+  </style>
 </head>
 <body>
-	<div id="app" class="flex-wrap">
-		<div v-for="fog in fog_listing" class="flex-nowrap">
-			<div v-for="n in fog.count" class="fog">
-				<img v-bind:src="fog.img">
-			</div>
-		</div>
-	</div>
-	<script src="../lib/vue.min.js"></script>
-	<script>
-		var app = new Vue({
-			el: '#app',
-			data: {
-				fog_listing: []
-			}
-		});
-	</script>
-	<script>
-		function getUrlParameter(name) {
-			name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-			var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-			var results = regex.exec(location.search);
-			return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-		};
+  <div id="app" class="flex-wrap">
+    <div v-for="fog in fog_listing" class="flex-nowrap">
+      <div v-for="n in fog.count" class="fog">
+        <img v-bind:src="fog.img">
+      </div>
+    </div>
+  </div>
+  <script src="../lib/vue.min.js"></script>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        fog_listing: []
+      }
+    });
+  </script>
+  <script>
+    function getUrlParameter(name) {
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      var results = regex.exec(location.search);
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    };
 
-		let jsonObj = getUrlParameter("json");
-		jsonObj = JSON.parse(jsonObj);
-		app.fog_listing = jsonObj.fog;
-	</script>
+    let jsonObj = getUrlParameter("json");
+    jsonObj = JSON.parse(jsonObj);
+    app.fog_listing = jsonObj.fog;
+  </script>
 </body>
 </html>
