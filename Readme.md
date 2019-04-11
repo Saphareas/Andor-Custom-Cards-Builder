@@ -1,3 +1,5 @@
+***The latest standalone version (commandline tool using puppeteer) is version 0.5.3***
+
 # Andor Custom Cards Builder
 
 This is a Fan-project for the board game 'The Legends of Andor'. You can write your own campaigns for this game and I thought I'd build something that generates original-looking game assets out of plain text.

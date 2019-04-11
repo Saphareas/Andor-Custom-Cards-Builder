@@ -1,6 +1,6 @@
 {
   "name": "andor-custom-cards-builder",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "",
   "author": "Fabian Große <saphareas@t-online.de>",
   "main": "main.js",
@@ -17,9 +17,7 @@
   },
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "html-pdf": "^2.2.0",
     "pdfjs": "^2.1.0",
-    "puppeteer": "^1.11.0",
-    "recursive-readdir": "^2.2.2"
+    "puppeteer": "^1.11.0"
   }
 }
